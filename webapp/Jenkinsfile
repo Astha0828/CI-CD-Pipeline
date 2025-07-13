@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+        VENV_DIR = "${WORKSPACE}\\venv"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/yourusername/your-python-repo.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat 'python -m venv venv'
+                bat '.\\venv\\Scripts\\pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat '.\\venv\\Scripts\\pytest'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the app...'
+                bat 'start /B .\\venv\\Scripts\\python app.py'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution finished.'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}

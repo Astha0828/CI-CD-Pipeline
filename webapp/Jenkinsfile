@@ -2,34 +2,39 @@ pipeline {
     agent any
 
     environment {
-        VENV_DIR = "${WORKSPACE}\\venv"
+        VENV_DIR = "${WORKSPACE}/webapp/venv"
     }
 
     stages {
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/Astha0828/CI-CD-Pipeline.git'
-
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m venv venv'
-                bat '.\\venv\\Scripts\\pip install -r requirements.txt'
+                dir('webapp') {
+                    bat 'python -m venv venv'
+                    bat '.\\venv\\Scripts\\pip install -r requirements.txt'
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat '.\\venv\\Scripts\\pytest'
+                dir('webapp') {
+                    bat '.\\venv\\Scripts\\pytest'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying the app...'
-                bat 'start /B .\\venv\\Scripts\\python app.py'
+                dir('webapp') {
+                    echo 'Deploying the app...'
+                    bat 'start /B .\\venv\\Scripts\\python app.py'
+                }
             }
         }
     }

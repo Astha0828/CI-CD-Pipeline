@@ -1,0 +1,6 @@
+git init
+git remote add origin https://github.com/YOUR_USERNAME/python-github-actions-app.git
+git add .
+git commit -m "Initial commit - GitHub Actions CI/CD"
+git push -u origin main
+
